@@ -1,6 +1,6 @@
 protobufver=$(shell protoc --version | cut -d' ' -f2)
 
-run : ComplexExample
+run : SimpleMain EnumExample ComplexExample
 
 SimpleMain : com/github/MickiFoerster/protobuf/SimpleMain.class
 	java -cp .:protobuf-java-3.10.0.jar com.github.MickiFoerster.protobuf.SimpleMain
