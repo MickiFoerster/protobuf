@@ -1,42 +1,45 @@
 protobufver=$(shell protoc --version | cut -d' ' -f2)
-CLASS_PATH=-cp .:gson-2.8.5.jar:protobuf-java-$(protobufver).jar:protobuf-java-util-$(protobufver).jar:build/generated
+CLASS_PATH=-cp .:gson-2.8.5.jar:protobuf-java-$(protobufver).jar:protobuf-java-util-$(protobufver).jar:build/generated:build/classes
 
-run :  SimpleMain EnumExample ComplexExample
+run : SimpleMain EnumExample ComplexExample ProtoToJSONMain
 
-examples: SimpleMain EnumExample ComplexExample ProtoToJSONMain
-
-SimpleMain : com/github/MickiFoerster/protobuf/SimpleMain.class
+SimpleMain : build/classes/com/github/MickiFoerster/protobuf/SimpleMain.class
 	java $(CLASS_PATH) com.github.MickiFoerster.protobuf.SimpleMain
 
-EnumExample : com/github/MickiFoerster/protobuf/EnumMain.class
+EnumExample : build/classes/com/github/MickiFoerster/protobuf/EnumMain.class
 	java $(CLASS_PATH) com.github.MickiFoerster.protobuf.EnumMain
 
-ComplexExample : com/github/MickiFoerster/protobuf/ComplexMain.class
+ComplexExample : build/classes/com/github/MickiFoerster/protobuf/ComplexMain.class
 	java $(CLASS_PATH) com.github.MickiFoerster.protobuf.ComplexMain
 
-ProtoToJSONMain : com/github/MickiFoerster/protobuf/ProtoToJSONMain.class
+ProtoToJSONMain : build/classes/com/github/MickiFoerster/protobuf/ProtoToJSONMain.class
 	java $(CLASS_PATH) com.github.MickiFoerster.protobuf.ProtoToJSONMain
-	java $(CLASS_PATH) com/github/MickiFoerster/protobuf/ProtoToJSONMain
 
-com/github/MickiFoerster/protobuf/SimpleMain.class : src/main/java/com.github.MickiFoerster.protobuf/SimpleMain.java protobuf-java-$(protobufver).jar build/generated/com/example/simple/Simple.java
+build/classes/com/github/MickiFoerster/protobuf/SimpleMain.class : src/main/java/com.github.MickiFoerster.protobuf/SimpleMain.java \
+                                                     protobuf-java-$(protobufver).jar \
+                                                     build/generated/com/example/simple/Simple.java
 	javac $(CLASS_PATH) $< 
-	javac -d . $(CLASS_PATH) $<
+	javac -d build/classes $(CLASS_PATH) $<
 
-com/github/MickiFoerster/protobuf/EnumMain.class : src/main/java/com.github.MickiFoerster.protobuf/EnumMain.java protobuf-java-$(protobufver).jar build/generated/com/example/enumerations/EnumExample.java
+build/classes/com/github/MickiFoerster/protobuf/EnumMain.class : src/main/java/com.github.MickiFoerster.protobuf/EnumMain.java \
+                                                   protobuf-java-$(protobufver).jar \
+												   build/generated/com/example/enumerations/EnumExample.java
 	javac $(CLASS_PATH) $< 
-	javac -d . $(CLASS_PATH) $<
+	javac -d build/classes $(CLASS_PATH) $<
 
-com/github/MickiFoerster/protobuf/ComplexMain.class : src/main/java/com.github.MickiFoerster.protobuf/ComplexMain.java protobuf-java-$(protobufver).jar build/generated/com/example/complex/ComplexExample.java
+build/classes/com/github/MickiFoerster/protobuf/ComplexMain.class : src/main/java/com.github.MickiFoerster.protobuf/ComplexMain.java \
+                                                      protobuf-java-$(protobufver).jar \
+													  build/generated/com/example/complex/ComplexExample.java
 	javac $(CLASS_PATH) $< 
-	javac -d . $(CLASS_PATH) $<
+	javac -d build/classes $(CLASS_PATH) $<
 
-com/github/MickiFoerster/protobuf/ProtoToJSONMain.class : src/main/java/com.github.MickiFoerster.protobuf/ProtoToJSONMain.java \
+build/classes/com/github/MickiFoerster/protobuf/ProtoToJSONMain.class : src/main/java/com.github.MickiFoerster.protobuf/ProtoToJSONMain.java \
                                                           src/main/java/com.github.MickiFoerster.protobuf/SimpleMain.java \
                                                           protobuf-java-$(protobufver).jar \
 														  protobuf-java-util-$(protobufver).jar \
 														  gson-2.8.5.jar
 	javac $(CLASS_PATH) $< 
-	javac -d . $(CLASS_PATH) $<
+	javac -d build/classes $(CLASS_PATH) $<
 
 build/generated/com/example/simple/Simple.java : src/main/proto/simple.proto build
 	protoc -Isrc/main/proto --java_out=build/generated/ $<
@@ -46,7 +49,9 @@ build/generated/com/example/complex/ComplexExample.java : src/main/proto/complex
 	protoc -Isrc/main/proto --java_out=build/generated/ $<
 
 build : 
-	mkdir -p build/generated
+	if [ ! -d build ]; then mkdir -p build; fi
+	if [ ! -d build/generated ]; then mkdir -p build/generated; fi
+	if [ ! -d build/classes ]; then mkdir -p build/classes; fi
 
 protobuf-java-$(protobufver).jar :
 	wget -O $@ \
@@ -60,4 +65,4 @@ gson-2.8.5.jar :
 	wget -O $@ \
 	https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.5/gson-2.8.5.jar
 
-.PHONY: run
+.PHONY: run build

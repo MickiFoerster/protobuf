@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class ProtoToJSONMain {
   public static void main(String[] args) {
-    System.out.println("Hello World!");
+    System.out.println("Hello from ProtoToJSON main!");
 
     SimpleMessage.Builder builder = SimpleMessage.newBuilder();
 
@@ -28,11 +28,21 @@ public class ProtoToJSONMain {
     builder.addAllSampleList(Arrays.asList(4, 5, 6));
 
     // Print this as a JSON
+    String jsonString = new String();
     try {
-      String jsonString = JsonFormat.printer().print(builder);
+      jsonString = JsonFormat.printer().print(builder);
       System.out.println(jsonString);
     } catch (InvalidProtocolBufferException e) {
       e.printStackTrace();
     }
+
+    // Parse JSON into protobuf
+    SimpleMessage.Builder builder2 = SimpleMessage.newBuilder();
+    try {
+      JsonFormat.parser().ignoringUnknownFields().merge(jsonString, builder2);
+    } catch (InvalidProtocolBufferException e) {
+      e.printStackTrace();
+    }
+    System.out.println(builder2);
   }
 }
