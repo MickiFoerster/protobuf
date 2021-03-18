@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package hello-world;
+
+option go_package = "hello-world;helloworldpb";
+
+message HelloWorld {
+    int32 id = 1;
+    string message = 2;
+    repeated int32 random_number = 4;
+}
