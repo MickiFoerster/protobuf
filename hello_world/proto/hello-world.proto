@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package hello-world;
+package example.helloworld;
 
-option go_package = "hello-world;helloworldpb";
+option go_package = "github.com/MickiFoerster/protobuf/hello_world/helloworld";
 
 message HelloWorld {
     int32 id = 1;
