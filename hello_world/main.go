@@ -6,7 +6,7 @@ import (
 	"net"
 	"time"
 
-	helloworldpb "github.com/MickiFoerster/protobuf/hello_world/helloworld"
+	helloworldpb "github.com/MickiFoerster/protobuf/hello_world/protoc-helloworld"
 	"google.golang.org/protobuf/proto"
 )
 
