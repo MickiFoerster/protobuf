@@ -7,18 +7,12 @@ import (
 	"time"
 
 	helloworldpb "github.com/MickiFoerster/protobuf/hello_world/protoc-helloworld"
-	"google.golang.org/protobuf/proto"
+	proto "github.com/golang/protobuf/proto"
 )
 
 func main() {
 	fmt.Println("proto buf hello world")
-	msg := &helloworldpb.HelloWorld{
-		Id:           23,
-		Message:      "Primzahlen",
-		RandomNumber: []int32{2, 3, 5, 7, 11, 13, 17, 19},
-	}
-	fmt.Println(msg)
-	go client(msg)
+	go client()
 	server_done := server()
 	<-server_done
 }
@@ -77,24 +71,35 @@ func handleConnection(conn net.Conn) {
 	log.Println("done")
 }
 
-func client(msg proto.Message) {
-	time.Sleep(time.Second)
-	conn, err := net.Dial("tcp", "localhost:12345")
-	if err != nil {
-		log.Fatalf("error: could not create client connection: %v\n", err)
-	}
-	defer conn.Close()
-	log.Println("client connection established")
+func client() {
+	var id int32 = 23
+	numbers := []int32{2, 3, 5, 7, 11, 13, 17, 19}
+	for {
+		msg := &helloworldpb.HelloWorld{
+			Id:           id,
+			Message:      "Primzahlen",
+			RandomNumber: numbers,
+		}
+		fmt.Println("client:", msg)
+		time.Sleep(time.Second)
+		conn, err := net.Dial("tcp", "localhost:12345")
+		if err != nil {
+			log.Fatalf("error: could not create client connection: %v\n", err)
+		}
+		log.Println("client connection established")
 
-	data, err := proto.Marshal(msg)
-	if err != nil {
-		log.Fatalf("error: could not serialize message: %v\n", err)
-	}
-	log.Println("protobuf message has been marshalled")
+		data, err := proto.Marshal(msg)
+		if err != nil {
+			log.Fatalf("error: could not serialize message: %v\n", err)
+		}
+		log.Println("protobuf message has been marshalled")
 
-	n, err := conn.Write(data)
-	if err != nil {
-		log.Fatalf("error: could not write message to connection", err)
+		n, err := conn.Write(data)
+		if err != nil {
+			log.Fatalf("error: could not write message to connection", err)
+		}
+		log.Println(n, "bytes have been written. Now close the connection.")
+		conn.Close()
+		id = (id * 1333) % 1335
 	}
-	log.Println(n, "bytes have been written")
 }
