@@ -2,4 +2,4 @@ module github.com/MickiFoerster/protobuf/hello_world
 
 go 1.16
 
-require google.golang.org/protobuf v1.26.0 // indirect
+require github.com/golang/protobuf v1.5.1
