@@ -8,8 +8,8 @@ import (
 
 func doEnum() {
 	em := enumpb.EnumMessage{
-		Id:            42,
-		DsayOfTheWeek: enumpb.DayOfTheWeek_TUESDAY,
+		Id:           42,
+		DayOfTheWeek: enumpb.DayOfTheWeek_TUESDAY,
 	}
 
 	fmt.Println(em)

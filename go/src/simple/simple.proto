@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package example.simple;
 
-option go_package = "simplepb";
+option go_package = "simple;simplepb";
 option java_package = "com.example.options";
 option java_multiple_files = true;
 
