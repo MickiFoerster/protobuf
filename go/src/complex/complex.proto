@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package example.complex;
 
-option go_package = "complex;complexpb";
+option go_package = "./src/complex";
 
 message ComplexMessage {
     DummyMessage one_dummy = 2;
@@ -13,4 +13,3 @@ message DummyMessage {
     int32 id = 1;
     string name = 2;
 }
-
